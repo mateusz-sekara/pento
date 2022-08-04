@@ -2,8 +2,17 @@ defmodule PentoWeb.WrongLive do
   use Phoenix.LiveView, layout: {PentoWeb.LayoutView, "live.html"}
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, score: 0, message: "Make guess", goal: goal(), time: time())}
+  def mount(_params, session, socket) do
+    {
+      :ok,
+      assign(
+        socket,
+        score: 0,
+        message: "Make guess",
+        time: time(),
+        goal: goal(),
+        session_id: session["live_socket_id"]
+      )}
   end
 
   @impl true
@@ -19,18 +28,25 @@ defmodule PentoWeb.WrongLive do
         <a href="#" phx-click="guess" phx-value-number={n}><%= n %></a>
       <% end %>
     </h2>
+    <pre>
+      <%= @current_user.email %>
+      <%= @session_id %>
+    </pre>
     """
   end
 
   @impl true
   def handle_event("guess", %{"number" => guess}, socket) do
     {guess, _} = Integer.parse(guess)
-    {message, point} = cond do
-      guess == socket.assigns.goal ->
-        win_props(guess)
-      true ->
-        loose_props(guess, socket.assigns.goal)
-    end
+
+    {message, point} =
+      cond do
+        guess == socket.assigns.goal ->
+          win_props(guess)
+
+        true ->
+          loose_props(guess, socket.assigns.goal)
+      end
 
     score = socket.assigns.score + point
 
@@ -42,13 +58,15 @@ defmodule PentoWeb.WrongLive do
 
   def win_props(guess) do
     {
-      "Your guess: #{guess}. You win", 1
+      "Your guess: #{guess}. You win",
+      1
     }
   end
 
   def loose_props(guess, goal) do
     {
-      "Your guess: #{guess}. Wrong. Guess again. #{goal}", -1
+      "Your guess: #{guess}. Wrong. Guess again. #{goal}",
+      -1
     }
   end
 
