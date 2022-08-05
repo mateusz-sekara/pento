@@ -101,4 +101,9 @@ defmodule Pento.Catalog do
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
   end
+
+  def markdown_product(%Product{unit_price: unit_price} = product, amount) do
+    Product.price_decrease_changeset(product, %{unit_price: unit_price - amount})
+    |> Repo.update()
+  end
 end
