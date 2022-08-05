@@ -61,5 +61,24 @@ defmodule Pento.CatalogTest do
       product = product_fixture()
       assert %Ecto.Changeset{} = Catalog.change_product(product)
     end
+
+    test "markdown_product/2 updates product for price decrease" do
+      product = product_fixture()
+      assert {:ok, updated_product} = Catalog.markdown_product(product, 10)
+      assert updated_product.unit_price == 110.5
+    end
+
+    test "markdonw_product/2 fails for price increase" do
+      product = product_fixture()
+      assert {:error, %Ecto.Changeset{} = changeset} = Catalog.markdown_product(product, -10)
+      assert pick_first_error(changeset) == "Price must be lower than current value"
+    end
+  end
+
+  defp pick_first_error(%Ecto.Changeset{} = changeset) do
+    changeset.errors
+    |> Enum.into(%{})
+    |> Map.get(:unit_price)
+    |> Kernel.elem(0)
   end
 end
