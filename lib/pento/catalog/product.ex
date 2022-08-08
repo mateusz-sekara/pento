@@ -29,7 +29,7 @@ defmodule Pento.Catalog.Product do
     |> cast(attrs, [:unit_price])
     |> validate_change(:unit_price, fn :unit_price, new_unit_price ->
       if new_unit_price >= current_unit_price do
-        [unit_price: "Price must be lower than current value"]
+        [unit_price: "New price must be lower than the current one - because reasons."]
       else
         []
       end
