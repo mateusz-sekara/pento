@@ -8,7 +8,6 @@ defmodule PentoWeb.ProductLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
       socket
-      |> assign(:greeting, "Welcome to Pento!")
       |> assign(:products, list_products())
     }
   end
