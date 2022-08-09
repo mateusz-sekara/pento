@@ -28,7 +28,7 @@ config :pento, Pento.Mailer, adapter: Swoosh.Adapters.Local
 
 # config :pento, Pento.Mailer,
 #   adapter: Swoosh.Adapters.Sendinblue,
-#   api_key: "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"
+#   api_key: ""
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
