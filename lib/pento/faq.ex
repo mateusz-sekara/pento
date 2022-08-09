@@ -19,7 +19,7 @@ defmodule Pento.FAQ do
   """
   def list_questions do
     Question
-    |> order_by(desc: :id)
+    |> order_by(asc: :id)
     |> Repo.all()
   end
 
