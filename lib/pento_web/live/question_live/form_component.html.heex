@@ -17,10 +17,6 @@
     <%= text_input f, :answer %>
     <%= error_tag f, :answer %>
   
-    <%= label f, :votes %>
-    <%= number_input f, :votes %>
-    <%= error_tag f, :votes %>
-  
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>
     </div>
