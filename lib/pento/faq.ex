@@ -18,7 +18,9 @@ defmodule Pento.FAQ do
 
   """
   def list_questions do
-    Repo.all(Question)
+    Question
+    |> order_by(desc: :id)
+    |> Repo.all()
   end
 
   @doc """
