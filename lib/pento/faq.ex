@@ -102,13 +102,8 @@ defmodule Pento.FAQ do
     Question.changeset(question, attrs)
   end
 
-  def increment_question_vote(%Question{} = question) do
-    Question.update_question_vote(question, :inc)
-    |> Repo.update()
-  end
-
-  def decrement_question_vote(%Question{} = question) do
-    Question.update_question_vote(question, :dec)
+  def update_question_vote(%Question{} = question, type) do
+    Question.update_question_vote_changeset(question, type)
     |> Repo.update()
   end
 end

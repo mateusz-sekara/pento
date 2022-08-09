@@ -19,12 +19,12 @@ defmodule Pento.FAQ.Question do
     |> validate_required([:question, :answer, :votes])
   end
 
-  def update_question_vote(%Question{} = question, :inc), do: update_vote(question, +1)
-  def update_question_vote(%Question{} = question, :dec), do: update_vote(question, -1)
+  def update_question_vote_changeset(%Question{} = question, :inc), do: update_vote(question, +1)
+  def update_question_vote_changeset(%Question{} = question, :dec), do: update_vote(question, -1)
 
   defp update_vote(%Question{votes: votes} = question, count) do
-    updated_votes = votes + count
+    attrs = %{votes: votes + count}
     question
-    |> cast(%{votes: updated_votes}, [:votes])
+    |> cast(attrs, [:votes])
   end
 end
