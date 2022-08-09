@@ -40,15 +40,14 @@ defmodule PentoWeb.QuestionLive.Index do
     {:noreply, assign(socket, :questions, list_questions())}
   end
 
-  def handle_event("upvote", %{"id" => id}, socket) do
-    question = FAQ.get_question!(id)
-    FAQ.increment_question_vote(question)
-    {:noreply, assign(socket, :questions, list_questions())}
-  end
+  @impl true
+  def handle_event("upvote", %{"id" => id}, socket), do: handle_update_vote(id, :inc, socket)
+  @impl true
+  def handle_event("downvote", %{"id" => id}, socket), do: handle_update_vote(id, :dec, socket)
 
-  def handle_event("downvote", %{"id" => id}, socket) do
-    question = FAQ.get_question!(id)
-    FAQ.decrement_question_vote(question)
+  defp handle_update_vote(id, type, socket) do
+    FAQ.get_question!(id)
+    |> FAQ.update_question_vote(type)
     {:noreply, assign(socket, :questions, list_questions())}
   end
 
