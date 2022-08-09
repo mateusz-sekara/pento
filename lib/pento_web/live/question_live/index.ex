@@ -6,7 +6,8 @@ defmodule PentoWeb.QuestionLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :questions, list_questions())}
+    socket = assign(socket, questions: get_questions(0), page: 0)
+    {:ok, socket, temporary_assigns: [questions: []]}
   end
 
   @impl true
@@ -40,7 +41,20 @@ defmodule PentoWeb.QuestionLive.Index do
     {:noreply, assign(socket, :questions, list_questions())}
   end
 
+  @impl true
+  def handle_event("load-more", _params, socket) do
+    page = socket.assigns.page + 1
+    new_questions = get_questions(page)
+    questions = socket.assigns.questions ++ new_questions
+    socket = assign(socket, questions: questions, page: page)
+    {:noreply, socket}
+  end
+
   defp list_questions do
     FAQ.list_questions()
+  end
+
+  defp get_questions(page) do
+    FAQ.get_questions(page)
   end
 end

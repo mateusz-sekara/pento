@@ -24,7 +24,7 @@
       <th></th>
     </tr>
   </thead>
-  <tbody id="questions">
+  <tbody id="questions" phx-hook="loadMore" phx-update="append" data-page={@page}>
     <%= for question <- @questions do %>
       <.live_component 
         module={PentoWeb.Live.QuestionLive.Row} 

@@ -21,6 +21,10 @@ defmodule Pento.FAQ do
     Repo.all(Question)
   end
 
+  def get_questions(page) do
+    Repo.all(from q in Question, order_by: [asc: q.id], offset: ^page * 10, limit: 10)
+  end
+
   @doc """
   Gets a single question.
 

@@ -1,23 +1,11 @@
 alias Pento.FAQ
 
-questions = [
-  %{
-    question: "Meaning of life?",
-    answer: "44",
-    votes: -67,
-  },
-  %{
-    question: "Who is the boss?",
-    answer: "Sękara",
-    votes: 1_000,
-  },
-  %{
-    question: "Who is the padawan?",
-    answer: "Grot",
-    votes: 10,
-  },
-]
-
-Enum.each(questions, fn q ->
-  FAQ.create_question(q)
+1..100000 |>
+Enum.each(fn _ ->
+  what = for _ <- 1..10, into: "", do: <<Enum.random('abcdefghijklm')>>
+  FAQ.create_question(%{
+    question: "Who has " <> Enum.random(~w(broken taken matched skipped)) <> what,
+    answer: Enum.random(~w(sekara grot pocahontas)),
+    votes: Enum.random(1..100)
+  })
 end)
