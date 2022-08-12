@@ -7,21 +7,22 @@ defmodule PentoWeb.ProductLive.FormComponent do
   def update(%{product: product} = assigns, socket) do
     changeset = Catalog.change_product(product)
 
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:image_upload, product.image_upload)
      |> assign(:changeset, changeset)
      |> allow_upload(:image,
        accept: ~w(.jpg .jpeg .png),
        max_entries: 1,
        max_file_size: 9_000_000,
-       auto_upload: true,
+       auto_upload: false,
        progress: &handle_progress/3
      )}
   end
 
   defp handle_progress(:image, entry, socket) do
-    :timer.sleep(200)
 
     if entry.done? do
       path =
@@ -31,12 +32,12 @@ defmodule PentoWeb.ProductLive.FormComponent do
           &upload_static_file(&1, socket)
         )
 
-      {
-        :noreply,
+      socket =
         socket
         |> put_flash(:info, "file #{entry.client_name} uploaded")
         |> assign(:image_upload, path)
-      }
+
+      {:noreply, socket}
     else
       {:noreply, socket}
     end

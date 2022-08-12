@@ -1,5 +1,7 @@
 <div>
   <h2><%= @title %></h2>
+  <p class="alert alert-info"><%= live_flash(@flash, :info) %></p>
+  <p class="alert alert-danger"><%= live_flash(@flash, :error) %></p>
 
   <.form
     let={f}
@@ -25,9 +27,14 @@
     <%= number_input f, :sku %>
     <%= error_tag f, :sku %>
 
+    <%= @image_upload %>
     <div phx-drop-target={@uploads.image.ref}>
       <%= live_file_input @uploads.image %>
     </div>
+
+    <%= for entry <- @uploads.image.entries do %>
+      <%= live_img_preview entry, width: 75 %>
+    <% end %>
 
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>
