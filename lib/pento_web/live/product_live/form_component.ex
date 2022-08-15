@@ -17,12 +17,13 @@ defmodule PentoWeb.ProductLive.FormComponent do
        accept: ~w(.jpg .jpeg .png),
        max_entries: 1,
        max_file_size: 9_000_000,
-       auto_upload: false,
+       auto_upload: true,
        progress: &handle_progress/3
      )}
   end
 
   defp handle_progress(:image, entry, socket) do
+    :timer.sleep(2000)
 
     if entry.done? do
       path =
@@ -103,5 +104,9 @@ defmodule PentoWeb.ProductLive.FormComponent do
 
   defp product_params(socket, params) do
     Map.put(params, "image_upload", socket.assigns.image_upload)
+  end
+
+  def upload_image_error(uploads, entry) do
+    "dupa"
   end
 end

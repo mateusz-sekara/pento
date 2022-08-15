@@ -6,6 +6,7 @@ defmodule Pento.Catalog do
   import Ecto.Query, warn: false
   alias Pento.Repo
 
+  alias Pento.Catalog.Search
   alias Pento.Catalog.Product
 
   @doc """
@@ -19,6 +20,26 @@ defmodule Pento.Catalog do
   """
   def list_products do
     Repo.all(Product)
+  end
+
+  def search_product_by_sku(attrs) do
+    changeset = %Search{}
+    |> Search.changeset(attrs)
+
+    case changeset.valid? do
+      true ->
+        changeset.changes
+        |> Map.get(:term)
+        |> search_by_sku()
+      false -> nil
+    end
+  end
+
+  defp search_by_sku(sku) do
+    query =
+      from p in Product,
+        where: p.sku == ^sku
+    Repo.one(query)
   end
 
   @doc """

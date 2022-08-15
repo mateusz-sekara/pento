@@ -39,5 +39,21 @@
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>
     </div>
+
+    <p>entries</p>
+    <%= for entry  <- @uploads.image.entries do %>
+      <p>
+        <%= entry.client_name %> - <%= entry.progress %>
+        <span class="alert-danger">
+          <%= upload_image_error(@uploads, entry) %>
+        </span>
+        <button 
+          phx-target="cancel-upload"
+          phx-click="cancel-upload"
+          phx-value-ref="{ entry.ref} ">
+          cancel
+        </button>
+        </p>
+       <% end %> 
   </.form>
 </div>
