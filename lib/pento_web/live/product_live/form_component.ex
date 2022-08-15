@@ -106,7 +106,7 @@ defmodule PentoWeb.ProductLive.FormComponent do
     Map.put(params, "image_upload", socket.assigns.image_upload)
   end
 
-  def upload_image_error(uploads, entry) do
-    "dupa"
+  def upload_image_error(_, _) do
+    "error"
   end
 end

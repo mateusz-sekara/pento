@@ -10,6 +10,8 @@ defmodule Pento.Catalog.Product do
     field :unit_price, :float
     field :image_upload, :string
 
+    has_many :ratings, Ratings
+
     timestamps()
   end
 
