@@ -24,7 +24,7 @@ defmodule Pento.Catalog do
 
   def list_products_with_user_ratings(user) do
     Product.Query.with_user_ratings(user)
-    |> Repo.all(Product)
+    |> Repo.all()
   end
 
   def search_product_by_sku(attrs) do

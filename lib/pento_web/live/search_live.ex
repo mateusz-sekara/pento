@@ -23,7 +23,6 @@ defmodule PentoWeb.SearchLive do
       |> Search.changeset(search_params)
       |> Map.put(:action, :validate)
 
-    IO.inspect(changeset)
     {:noreply, assign(socket, :changeset, changeset)}
   end
 
