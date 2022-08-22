@@ -6,3 +6,5 @@ alias Pento.Catalog.Product
 
 alias Pento.Survey
 alias Pento.Promo
+
+alias Pento.Repo

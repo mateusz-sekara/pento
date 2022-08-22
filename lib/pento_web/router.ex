@@ -27,7 +27,7 @@ defmodule PentoWeb.Router do
       live "/promo", PromoLive, :index
       live "/search", SearchLive, :index
       live "/survey", SurveyLive, :index
-
+      live "/admin-dashboard", Admin.DashboardLive
 
       live "/products", ProductLive.Index, :index
       live "/products/new", ProductLive.Index, :new
