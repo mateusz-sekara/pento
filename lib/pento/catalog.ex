@@ -32,6 +32,13 @@ defmodule Pento.Catalog do
     |> Repo.all()
   end
 
+  def products_with_average_ratings(
+    %{age_group_filter: age_group_filter}
+  ) do
+    Product.Query.products_with_average_ratings_by_age(age_group_filter)
+    |> Repo.all()
+  end
+
   def search_product_by_sku(attrs) do
     changeset = %Search{}
     |> Search.changeset(attrs)
