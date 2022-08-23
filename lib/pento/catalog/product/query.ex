@@ -2,7 +2,7 @@ defmodule Pento.Catalog.Product.Query do
   import Ecto.Query
 
   alias Pento.Catalog.Product
-  alias Pento.Survey.Rating
+  alias Pento.Survey.{Rating, Demographic}
 
   def base do
     Product
@@ -20,65 +20,26 @@ defmodule Pento.Catalog.Product.Query do
     |> preload(ratings: ^ratings_query)
   end
 
-  def with_average_ratings(query \\ base()) do
-    query
-    |> join_ratings
-    |> average_ratings
-  end
-
-  defp join_ratings(query) do
-    query
-    |> join(:inner, [p], r in Rating, on: r.product_id == p.id)
-  end
-
-  defp average_ratings(query) do
-    query
-    |> group_by([p], p.id)
-    |> select([p, r], {p.name, fragment("?::float", avg(r.stars))})
-  end
-
-  def products_with_average_ratings() do
-    from p in Product,
+  def products_with_average_rating(%{min: min, max: max} = _age_filter) do
+    aggregations_query = from p in Product,
       join: r in assoc(p, :ratings),
-      group_by: p.id,
-      select: {p.name, fragment("?::float", avg(r.stars))}
-  end
-
-  def products_with_average_ratings_by_age("all") do
-    products_with_average_ratings()
-  end
-
-  def products_with_average_ratings_by_age("18 and under") do
-    products_with_average_ratings_by_age(year(18), year(0))
-  end
-
-  def products_with_average_ratings_by_age("18 to 25") do
-    products_with_average_ratings_by_age(year(25), year(18))
-  end
-
-  def products_with_average_ratings_by_age("25 to 35") do
-    products_with_average_ratings_by_age(year(35), year(25))
-  end
-
-  def products_with_average_ratings_by_age("35 and up") do
-    products_with_average_ratings_by_age(0, year(35))
-  end
-
-  def products_with_average_ratings_by_age(
-        base_query \\ products_with_average_ratings(),
-        birth_year_min,
-        birth_year_max
-      ) do
-    from [p, r] in base_query,
       left_join: u in assoc(r, :user),
-      left_join: d in Pento.Survey.Demographic,
-      on: d.user_id == u.id,
-      where:
-        d.year_of_birth >= ^birth_year_min and
-          d.year_of_birth <= ^birth_year_max
-  end
+      left_join: d in Demographic, on: d.user_id == u.id,
+      where: d.year_of_birth >= ^min and d.year_of_birth <= ^max,
+      group_by: p.id,
+      select: %{id: p.id, avg_rating: fragment("?::float", avg(r.stars))}
 
-  defp year(period) do
-    DateTime.utc_now().year - period
+    from p in Product,
+      left_join: aggr in subquery(aggregations_query), on: p.id == aggr.id,
+      select: [p.name, coalesce(aggr.avg_rating, 0)]
+  end
+  def products_with_average_rating(%{min: min}) do
+    products_with_average_rating(%{min: min, max: DateTime.utc_now().year})
+  end
+  def products_with_average_rating(%{max: max}) do
+    products_with_average_rating(%{min: 1900, max: max})
+  end
+  def products_with_average_rating(%{}) do
+    products_with_average_rating(%{min: 1900, max: DateTime.utc_now().year})
   end
 end

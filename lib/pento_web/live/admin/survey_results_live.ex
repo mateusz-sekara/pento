@@ -3,6 +3,7 @@ defmodule PentoWeb.Admin.SurveyResultsLive do
   alias Pento.Catalog
   alias Contex.Dataset
   alias Contex.Plot
+  alias PentoWeb.Admin.AgeFilter
 
   @impl true
   def update(assigns, socket) do
@@ -10,17 +11,27 @@ defmodule PentoWeb.Admin.SurveyResultsLive do
       :ok,
       socket
       |> assign(assigns)
+      |> assign_age_filter_options()
       |> assign_age_group_filter()
       |> assign_products()
       |> assign_chart()
     }
   end
 
+  defp assign_age_filter_options(socket) do
+    assign(
+      socket,
+      :age_filter_options,
+      AgeFilter.options()
+    )
+  end
+
   defp assign_products(%{assigns: %{age_group_filter: age_group_filter}} = socket) do
+    filter = %{age_group_filter: AgeFilter.filter_value(age_group_filter)}
     assign(
       socket,
       :products_with_average_ratings,
-      Catalog.products_with_average_ratings(%{age_group_filter: age_group_filter})
+      Catalog.products_with_average_ratings(filter)
     )
   end
 
@@ -37,7 +48,7 @@ defmodule PentoWeb.Admin.SurveyResultsLive do
   end
 
   defp assign_age_group_filter(socket) do
-    assign_age_group_filter(socket, "all")
+    assign_age_group_filter(socket, AgeFilter.default_option())
   end
 
   defp assign_age_group_filter(socket, age_group_filter) do
