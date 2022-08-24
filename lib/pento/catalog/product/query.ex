@@ -44,7 +44,7 @@ defmodule Pento.Catalog.Product.Query do
   end
 
   defp min_year_of_birth do
-    first.._last_ = Demographic.year_of_birth_range()
+    first.._last = Demographic.year_of_birth_range()
     first
   end
 
