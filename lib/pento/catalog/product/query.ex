@@ -34,12 +34,22 @@ defmodule Pento.Catalog.Product.Query do
       select: [p.name, coalesce(aggr.avg_rating, 0)]
   end
   def products_with_average_rating(%{min: min}) do
-    products_with_average_rating(%{min: min, max: DateTime.utc_now().year})
+    products_with_average_rating(%{min: min, max: max_year_of_birth()})
   end
   def products_with_average_rating(%{max: max}) do
-    products_with_average_rating(%{min: 1900, max: max})
+    products_with_average_rating(%{min: min_year_of_birth(), max: max})
   end
   def products_with_average_rating(%{}) do
-    products_with_average_rating(%{min: 1900, max: DateTime.utc_now().year})
+    products_with_average_rating(%{min: min_year_of_birth(), max: max_year_of_birth()})
+  end
+
+  defp min_year_of_birth do
+    first.._last_ = Demographic.year_of_birth_range()
+    first
+  end
+
+  defp max_year_of_birth do
+    _first..last = Demographic.year_of_birth_range()
+    last
   end
 end
