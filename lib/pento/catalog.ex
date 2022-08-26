@@ -27,23 +27,24 @@ defmodule Pento.Catalog do
     |> Repo.all()
   end
 
-  def products_with_average_ratings(
-    %{age_group_filter: age_group_filter}
-  ) do
-    Product.Query.products_with_average_rating(age_group_filter)
+  def products_with_average_ratings(filters) do
+    Product.Query.products_with_average_rating(filters)
     |> Repo.all()
   end
 
   def search_product_by_sku(attrs) do
-    changeset = %Search{}
-    |> Search.changeset(attrs)
+    changeset =
+      %Search{}
+      |> Search.changeset(attrs)
 
     case changeset.valid? do
       true ->
         changeset.changes
         |> Map.get(:term)
         |> search_by_sku()
-      false -> nil
+
+      false ->
+        nil
     end
   end
 
@@ -51,6 +52,7 @@ defmodule Pento.Catalog do
     query =
       from p in Product,
         where: p.sku == ^sku
+
     Repo.one(query)
   end
 

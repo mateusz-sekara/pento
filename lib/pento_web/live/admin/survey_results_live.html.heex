@@ -2,14 +2,14 @@
     <h1>Survey Results</h1>
 
     <.form
-        for={:age_group_filter}
-        phx-change="age_group_filter"
+        for={:filter}
+        phx-change="update_filters"
         phx-target={@myself}
         id={@id}>
 
         <label>Filter by age group:</label>
         <select name="age_group_filter" id="age_group_filter">
-            <%= for age_group <- @age_filter_options do %>
+            <%= for age_group <- AgeFilter.options() do %>
                 <option 
                     value={age_group}
                     selected={@age_group_filter == age_group}>
@@ -17,8 +17,19 @@
                 </option>
             <% end %>
         </select>
+
+        <label>Filter by gender:</label>
+        <select name="gender_filter" id="gender_filter">
+            <%= for gender <- GenderFilter.options() do %>
+                <option
+                    value={gender}
+                    selected={@gender_filter == gender}>
+                    <%= gender %>
+                </option>
+            <% end %>
+        </select>
     </.form>
-    
+
 
     <div id="survey-results-chart">
         <%= @chart %>

@@ -20,27 +20,52 @@ defmodule Pento.Catalog.Product.Query do
     |> preload(ratings: ^ratings_query)
   end
 
-  def products_with_average_rating(%{min: min, max: max} = _age_filter) do
-    aggregations_query = from p in Product,
-      join: r in assoc(p, :ratings),
-      left_join: u in assoc(r, :user),
-      left_join: d in Demographic, on: d.user_id == u.id,
-      where: d.year_of_birth >= ^min and d.year_of_birth <= ^max,
-      group_by: p.id,
-      select: %{id: p.id, avg_rating: fragment("?::float", avg(r.stars))}
+  def products_with_average_rating(filters) do
+
+    aggregations_query =
+      from p in Product,
+        join: r in assoc(p, :ratings),
+        left_join: u in assoc(r, :user),
+        left_join: d in Demographic,
+        on: d.user_id == u.id,
+        group_by: p.id,
+        select: %{id: p.id, avg_rating: fragment("?::float", avg(r.stars))}
+
+    aggregations_query =
+      aggregations_query
+      |> with_year_of_birth(Map.get(filters, :age_filter))
+      |> with_gender(Map.get(filters, :gender_filter))
 
     from p in Product,
-      left_join: aggr in subquery(aggregations_query), on: p.id == aggr.id,
+      left_join: aggr in subquery(aggregations_query),
+      on: p.id == aggr.id,
       select: [p.name, coalesce(aggr.avg_rating, 0)]
   end
-  def products_with_average_rating(%{min: min}) do
-    products_with_average_rating(%{min: min, max: max_year_of_birth()})
+
+  def with_year_of_birth(query, %{min: min, max: max}) do
+    query
+    |> where([_, _, _, d], d.year_of_birth >= ^min and d.year_of_birth <= ^max)
   end
-  def products_with_average_rating(%{max: max}) do
-    products_with_average_rating(%{min: min_year_of_birth(), max: max})
+
+  def with_year_of_birth(query, %{min: min}) do
+    with_year_of_birth(query, %{min: min, max: max_year_of_birth()})
   end
-  def products_with_average_rating(%{}) do
-    products_with_average_rating(%{min: min_year_of_birth(), max: max_year_of_birth()})
+
+  def with_year_of_birth(query, %{max: max}) do
+    with_year_of_birth(query, %{min: min_year_of_birth(), max: max})
+  end
+
+  def with_year_of_birth(query, nil) do
+    query
+  end
+
+  def with_gender(query, nil) do
+    query
+  end
+
+  def with_gender(query, gender_filter) do
+    query
+    |> where([_, _, _, d], d.gender == ^gender_filter)
   end
 
   defp min_year_of_birth do
