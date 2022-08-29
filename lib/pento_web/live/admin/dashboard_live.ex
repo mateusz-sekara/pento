@@ -2,6 +2,7 @@ defmodule PentoWeb.Admin.DashboardLive do
   use PentoWeb, :live_view
   alias PentoWeb.Endpoint
   alias PentoWeb.Admin.SurveyResultsLive
+  alias PentoWeb.UserActivityLive
 
   @survey_results_topic "survey_results"
   @user_activity_topic "user_activity"
@@ -33,5 +34,4 @@ defmodule PentoWeb.Admin.DashboardLive do
     )
     {:noreply, socket}
   end
-
 end
