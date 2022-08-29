@@ -17,7 +17,7 @@ defmodule PentoWeb.Admin.SurveyResultsLive do
     }
   end
 
-  defp assign_products(%{assigns: assigns} = socket) do
+  def assign_products(%{assigns: assigns} = socket) do
 
     filters = %{
       age_group_filter: AgeFilter.filter_value(Map.get(assigns, :age_group_filter)),
@@ -44,31 +44,31 @@ defmodule PentoWeb.Admin.SurveyResultsLive do
     assign(socket, :chart, chart)
   end
 
-  defp assign_age_group_filter(
+  def assign_age_group_filter(
     %{assigns: %{age_group_filter: age_group_filter}} = socket
   ) do
     assign_age_group_filter(socket, age_group_filter)
   end
 
-  defp assign_age_group_filter(socket) do
+  def assign_age_group_filter(socket) do
     assign_age_group_filter(socket, AgeFilter.default_option())
   end
 
-  defp assign_age_group_filter(socket, age_group_filter) do
+  def assign_age_group_filter(socket, age_group_filter) do
     assign(socket, :age_group_filter, age_group_filter)
   end
 
-  defp assign_gender_filter(
+  def assign_gender_filter(
     %{assigns: %{gender_filter: gender_filter}} = socket
   ) do
     assign_gender_filter(socket, gender_filter)
   end
 
-  defp assign_gender_filter(socket) do
+  def assign_gender_filter(socket) do
     assign_gender_filter(socket, GenderFilter.default_option())
   end
 
-  defp assign_gender_filter(socket, gender_filter) do
+  def assign_gender_filter(socket, gender_filter) do
     assign(socket, :gender_filter, gender_filter)
   end
 
