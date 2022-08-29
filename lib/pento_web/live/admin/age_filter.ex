@@ -15,6 +15,7 @@ defmodule PentoWeb.Admin.AgeFilter do
     |> Enum.map(fn {key, _} -> key end)
   end
 
+  @spec filter_value(any) :: any
   def filter_value(key) do
     Map.get(@age_group_filter, key)
     |> Map.get(:val)
