@@ -26,7 +26,7 @@ defmodule Pento.Catalog.Product.Query do
       from p in Product,
         join: r in assoc(p, :ratings),
         left_join: u in assoc(r, :user),
-        left_join: d in Demographic,
+        left_join: d in Demographic, as: :demographic,
         on: d.user_id == u.id,
         group_by: p.id,
         select: %{id: p.id, avg_rating: fragment("?::float", avg(r.stars))}
@@ -42,9 +42,10 @@ defmodule Pento.Catalog.Product.Query do
       select: [p.name, coalesce(aggr.avg_rating, 0)]
   end
 
+  @spec with_year_of_birth(any, nil | map) :: any
   def with_year_of_birth(query, %{min: min, max: max}) do
     query
-    |> where([_, _, _, d], d.year_of_birth >= ^min and d.year_of_birth <= ^max)
+    |> where([demographic: d], d.year_of_birth >= ^min and d.year_of_birth <= ^max)
   end
 
   def with_year_of_birth(query, %{min: min}) do
