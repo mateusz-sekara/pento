@@ -26,7 +26,7 @@ defmodule PentoWeb.Admin.DashboardLive do
     {:noreply, socket}
   end
 
-  def handle_info(%{event: "presence_diff"}, socket) do
+  def handle_info(%{event: "presence_diff", topic: "user_activity"}, socket) do
     send_update(
       UserActivityLive,
       id: socket.assigns.user_activity_component_id
